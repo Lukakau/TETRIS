@@ -27,15 +27,15 @@
             src: url(/TETRIS-SUPREMO/fonts/ARCADE_R.TTF);
         }
         body{  
-            display: flex;
-            align-items: center;
-            margin-top: 50px;
-            justify-content: space-evenly;
             background: black;
             font-family: Arcade_N;  
-            font-size: 18px;  
-            text-align: center;  
+            font-size: 18px;
         }  
+        .tudo{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
         #tetris{  
             border: solid 0.2em var(--corPagina);  
             height: 90vh;
@@ -43,11 +43,6 @@
         #nextPiece{
             border: solid 0.2em var(--corPagina);  
             height: 25vh;
-        }
-        .elementosJogo{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         #comandos{
             font-family: Arcade_N;
@@ -71,7 +66,7 @@
             border-radius: 5px;
             transform: translateX(-50%);
         }
-        .botao{
+        .botoes{
             display: flex;
             flex-direction: column;
             gap: 30px;
@@ -166,6 +161,16 @@
             outline: 0;
             padding: 37px;
         }
+        .leftside{
+            display: flex;
+            flex-direction: column;
+            gap: 30px;            
+        }
+        #canva-score{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         table.dataTable thead th, table.dataTable thead td, table.dataTable tfoot th, table.dataTable tfoot td {
         text-align: center;
         }
@@ -181,63 +186,59 @@
             background-size: cover;
             cursor:pointer
         }
-        .rightSide{
-            display: flex;
-            flex-direction: column;
-            gap: 125px;
-            justify-content: center;
-            align-items: center;
-        }
     </style>
 </head>
 <body>
-    <div id="gameOverScreen" style="display: none;">
-        <h1>Game Over!</h1>
-    </div>
-    <div class="botao">
-        <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo">
-        <button onclick="start()" id="startButton">Start</button>
-        <button id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Comandos
-        </button>
-        <div class="collapse" id="collapseExample">
-            <div class="cartao">
-                < >: Mover<br>
-                ↓: Descer<br>
-                A: Sentido Anti-Horario<br>
-                D: Sentido Horario
+    <div class="tudo">
+        <div id="gameOverScreen" style="display: none;">
+            <h1>Game Over!</h1>
+        </div>
+        <div class="leftside">
+            <div id="canva-score">
+                <div id="score"></div>
+                <canvas id="nextPiece" width="80" height="80"></canvas>
+            </div>
+            <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo">
+            <div class="botoes">
+                <button onclick="start()" id="startButton">Start</button>
+                <button id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Comandos
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="cartao">
+                        < >: Mover<br>
+                        ↓: Descer<br>
+                        A: Sentido Anti-Horario<br>
+                        D: Sentido Horario
+                    </div>
+                </div>
+                <button type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">Score Board
+                </button> 
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <table id="example" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Sobrenome</th>
+                                    <th></th>
+                                    <th>Data</th>
+                                    <th>Score</th>
+                                    <th>Excluir</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scoreboardBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
-        <button type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">Score Board
-        </button>
-        
-        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <table id="example" class="display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Sobrenome</th>
-                            <th></th>
-                            <th>Data</th>
-                            <th>Score</th>
-                            <th>Excluir</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scoreboardBody">
-                    </tbody>
-                </table>
-            </div>
-          </div>
+        <div class="rightSide">
+            <canvas id="tetris" width="240" height="400"></canvas>
         </div>
-    </div>
-    <div class="elementosJogo">
-        <canvas id="tetris" width="240" height="400"></canvas>
-    </div>
-    <div class="rightSide">
-        <canvas id="nextPiece" width="80" height="80"></canvas>
-        <div id="score"></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script>
@@ -690,8 +691,8 @@
             context.fillStyle = "#000";  
             context.fillRect(0, 0, canvas.width, canvas.height);  
             drawMatrix(arena, {x: 0, y: 0});  
-            drawMatrix(player.matrix, player.pos);  
             drawGhostPiece();
+            drawMatrix(player.matrix, player.pos);  
         }  
         function merge(arena, player) {  
             player.matrix.forEach((row, y) => {  
@@ -763,7 +764,7 @@
             player.pos.x = Math.floor((arena[0].length / 2) - (player.matrix[0].length / 2));
             
             if (dropInterval > 100) {
-                dropInterval -= 10;
+                dropInterval -= 4;
             }
         
             if (collide(arena, player)) {
@@ -802,6 +803,7 @@
         function showGameOver() {
             document.getElementById('gameOverScreen').style.display = 'block';
         }
+
         function gameOver() {
             showGameOver();
             console.log("Game Over!");
@@ -840,7 +842,15 @@
                 ghostPiecePosition.y++;
             }
             ghostPiecePosition.y--;
-            drawMatrix(player.matrix, ghostPiecePosition, true);
+
+            player.matrix.forEach((row, y) => {  
+                row.forEach((value, x) => {  
+                    if (value !== 0) {
+                        context.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                        context.fillRect(x + ghostPiecePosition.x, y + ghostPiecePosition.y, 1, 1);
+                    }
+                });
+            });
         }
         function addScoreToTable(playerName, playerPartnerName, date, score) {
             if (scoreboardTable) {
@@ -855,7 +865,7 @@
                 ]).draw();
             }
         }
-        function deleteScore(event) { debugger
+        function deleteScore(event) {
             const row = event.target.closest('tr');
             const playerName = row.cells[0].innerText;
             const playerPartnerName = row.cells[1].innerText;
@@ -910,7 +920,7 @@
             }  
             lastTime = time;  
             draw();  
-        requestAnimationFrame(update);  
+            requestAnimationFrame(update);  
         }  
         function updateScore() {  
             let formattedScore = String(player.score).padStart(4, '0');  
