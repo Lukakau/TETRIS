@@ -35,6 +35,8 @@
             display: flex;
             justify-content: space-evenly;
             align-items: center;
+            margin-top: 40px;
+            
         }
         #tetris{  
             border: solid 0.2em var(--corPagina);  
@@ -99,17 +101,9 @@
             font-size: 14px;
             width: 217px;
             position: relative;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
             background-clip: border-box;
-            color: var(--corPagina)
+            color: var(--corPagina);
+            text-align: center;
         }
         #score{
             color: var(--corPagina);  
@@ -170,6 +164,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 20px;
         }
         table.dataTable thead th, table.dataTable thead td, table.dataTable tfoot th, table.dataTable tfoot td {
         text-align: center;
@@ -186,6 +181,9 @@
             background-size: cover;
             cursor:pointer
         }
+        #nivel{
+            color: var(--corPagina);
+        }
     </style>
 </head>
 <body>
@@ -196,6 +194,7 @@
         <div class="leftside">
             <div id="canva-score">
                 <div id="score"></div>
+                <div id="nivel"></div>
                 <canvas id="nextPiece" width="80" height="80"></canvas>
             </div>
             <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo">
@@ -207,12 +206,14 @@
                 <div class="collapse" id="collapseExample">
                     <div class="cartao">
                         < >: Mover<br>
-                        ↓: Descer<br>
+                        🡣: Descer<br>
                         A: Sentido Anti-Horario<br>
-                        D: Sentido Horario
+                        D: Sentido Horario<br>
+                        Espaco: Hard Drop
                     </div>
                 </div>
-                <button type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">Score Board
+                <button type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">
+                    Score Board
                 </button> 
                 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -222,7 +223,7 @@
                                 <tr>
                                     <th>Nome</th>
                                     <th>Sobrenome</th>
-                                    <th></th>
+                                    <th>Level</th>
                                     <th>Data</th>
                                     <th>Score</th>
                                     <th>Excluir</th>
@@ -491,13 +492,6 @@
                     "processing": "Carregando...",
                     "searchPlaceholder": "Buscar registros"
                 },
-                columnDefs: [
-                    {
-                        target: 2,
-                        visible: false,
-                        searchable: false
-                    },
-                ]
             });
             loadScoreboardData();
         });
@@ -763,10 +757,6 @@
             player.pos.y = 0;
             player.pos.x = Math.floor((arena[0].length / 2) - (player.matrix[0].length / 2));
             
-            if (dropInterval > 100) {
-                dropInterval -= 4;
-            }
-        
             if (collide(arena, player)) {
                 gameOver();
                 return;
@@ -799,6 +789,7 @@
             dropInterval = 500;  
             player.score = 0;
             updateScore();
+            startLevelUpdate()
         }
         function showGameOver() {
             document.getElementById('gameOverScreen').style.display = 'block';
@@ -809,15 +800,12 @@
             console.log("Game Over!");
             dropInterval = 9999999;
             player.pos.y = -10;
-
+            stopLevelUpdate()
             let playerName = prompt("Digite seu nome:");
             let playerPartnerName = prompt("Digite o seu sobrenome:");
 
             playerName = playerName.substring(0, 14);
             playerPartnerName = playerPartnerName.substring(0, 14);
-
-            document.cookie = `playerName=${playerName}; expires=Thu, 01 Jan 2030 00:00:00 UTC;`;
-            document.cookie = `playerPartnerName=${playerPartnerName}; expires=Thu, 01 Jan 2030 00:00:00 UTC;`;
 
             const date = new Date().toLocaleDateString();
             const score = player.score;
@@ -827,15 +815,36 @@
             saveScoreboardData();
         }
         function playerHardDrop() {
+            const originalPos = { ...player.pos };
             while (!collide(arena, player)) {
                 player.pos.y++;
             }
             player.pos.y--;
-            merge(arena, player);
-            playerReset();
-            arenaSweep();
-            updateScore();
+            if (!collide(arena, player)) {
+                var moveDelay = 100;
+                let currentTime = performance.now();
+                let allowMove = true;
+
+                const moveHandler = (event) => {
+                    if (allowMove) {
+                        if (event.keyCode === 37) { 
+                            playerMove(-1);
+                            allowMove = false; 
+                        } else if (event.keyCode === 39) { 
+                            playerMove(1);
+                            allowMove = false; 
+                        }
+                    }
+                };
+
+                document.addEventListener("keydown", moveHandler);
+
+                setTimeout(() => {
+                    document.removeEventListener("keydown", moveHandler);
+                }, moveDelay);
+            }
         }
+
         function drawGhostPiece() {
             let ghostPiecePosition = { ...player.pos };
             while (!collide(arena, { matrix: player.matrix, pos: { ...ghostPiecePosition } })) {
@@ -852,59 +861,72 @@
                 });
             });
         }
-        function addScoreToTable(playerName, playerPartnerName, date, score) {
+        // Defina uma variável para controlar o intervalo de atualização do nível
+        let levelUpdateInterval;
+
+        // Função para atualizar o nível do jogador com base no tempo decorrido
+        function updateLevel() {
+            player.level++; // Aumenta o nível do jogador
+            dropInterval -= 30; // Reduz o intervalo de queda para aumentar a velocidade do jogo
+            showLevel(); // Atualiza a exibição do nível
+        }
+
+        // Função para iniciar o intervalo de atualização do nível
+        function startLevelUpdate() {
+            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos
+        }
+
+        // Função para parar o intervalo de atualização do nível (se necessário)
+        function stopLevelUpdate() {
+            clearInterval(levelUpdateInterval);
+        }
+
+        // Função para exibir o nível do jogador
+        function showLevel() {
+            let nivelJogador = String(player.level).padStart(3, '0');
+            document.getElementById("nivel").innerText = "Level: " + nivelJogador;
+        }
+
+        function addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date, deleteButton) {
             if (scoreboardTable) {
                 const deleteButton = `<button class="botao-de-exclusao" onclick="deleteScore(event)"></button>`;
                 scoreboardTable.row.add([
                     playerName,
                     playerPartnerName,
-                    '',
-                    date,
+                    nivelJogador,
                     score,
+                    date,
                     deleteButton
-                ]).draw();
+                ])  .draw(); 
             }
+
+
+                // ache o problema com a coluna 4 //
+
+
         }
         function deleteScore(event) {
             const row = event.target.closest('tr');
-            const playerName = row.cells[0].innerText;
-            const playerPartnerName = row.cells[1].innerText;
-
-            deletePlayerCookies(playerName, playerPartnerName);
-            scoreboardTable.row(row).remove().draw();
-        }
-        function deletePlayerCookies(playerName, playerPartnerName) {
-            document.cookie = `playerName=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
-            document.cookie = `playerPartnerName=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+            const rowIndex = scoreboardTable.row(row).index(); // Obtém o índice da linha na tabela
             const data = JSON.parse(localStorage.getItem('scoreboardData'));
             if (data) {
-                const newData = data.filter(row => row[0] !== playerName || row[1] !== playerPartnerName);
-                localStorage.setItem('scoreboardData', JSON.stringify(newData));
+                data.splice(rowIndex, 1); // Remove os dados associados ao índice da linha
+                localStorage.setItem('scoreboardData', JSON.stringify(data));
             }
-            const rows = scoreboardTable.rows().data();
-            rows.each((row, index) => {
-                if (row[0].startsWith(playerName)) {
-                    scoreboardTable.row(index).remove().draw();
-                }
-            });
+            scoreboardTable.row(row).remove().draw();
         }
         function loadScoreboardData() {
             const data = localStorage.getItem('scoreboardData');
             if (data) {
                 const scoreboardData = JSON.parse(data);
                 scoreboardData.forEach(row => {
-                    addScoreToTable(row[0], row[1], row[3], row[4]);
+                    addScoreToTable(row[0], row[1], row[2], row[3], row[4], row[5]);
                 });
             }
         }
         function saveScoreboardData() {
             const data = scoreboardTable.rows().data().toArray();
             localStorage.setItem('scoreboardData', JSON.stringify(data));
-        }
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
         }
         function showControls() {
             controlsBox.style.display = "block";
@@ -926,7 +948,6 @@
             let formattedScore = String(player.score).padStart(4, '0');  
             document.getElementById("score").innerText = "Score: " + formattedScore;  
         } 
-        
         document.addEventListener("keydown", (event) => {  
             if (event.keyCode === 37) {  
                 playerMove(-1);  
@@ -946,7 +967,6 @@
             else if (event.keyCode === 32) { // Tecla de espaço para hard drop
                 playerHardDrop();
             }
-
         });  
         const arenaNextPiece = createMatrix(5, 5);
         const arena = createMatrix(12, 20);  
@@ -954,8 +974,10 @@
             pos: { x: 0, y: 0 },  
             matrix: null,  
             score: 0,  
+            level: 0,
         };
         updateScore();
+        showLevel();
     </script>
 </body>
 </html>
