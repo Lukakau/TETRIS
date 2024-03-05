@@ -199,8 +199,8 @@
             </div>
             <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo">
             <div class="botoes">
-                <button onclick="start()" id="startButton">Start</button>
-                <button id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <button onclick="start(), buttonClickSound()" id="startButton">Start</button>
+                <button onclick= "buttonClickSound()" id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                     Comandos
                 </button>
                 <div class="collapse" id="collapseExample">
@@ -212,7 +212,7 @@
                         Espaco: Hard Drop
                     </div>
                 </div>
-                <button type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">
+                <button onclick= "buttonClickSound()" type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">
                     Score Board
                 </button> 
                 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -224,8 +224,8 @@
                                     <th>Nome</th>
                                     <th>Sobrenome</th>
                                     <th>Level</th>
-                                    <th>Data</th>
                                     <th>Score</th>
+                                    <th>Data</th>
                                     <th>Excluir</th>
                                 </tr>
                             </thead>
@@ -241,6 +241,11 @@
             <canvas id="tetris" width="240" height="400"></canvas>
         </div>
     </div>
+    <audio id="gameOverSound" src="/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
+    <audio id="tetrisDropSound" src="/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
+    <audio id="tetrisBackgroundMusic" src="/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
+    <audio id="buttonSound" src="/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
+    <audio id="lineClear" src="/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script>
     <script>
@@ -492,6 +497,12 @@
                     "processing": "Carregando...",
                     "searchPlaceholder": "Buscar registros"
                 },
+                order: [
+                    [3, 'desc'],
+                    [2, 'desc'],
+                    [4, 'asc'],
+                    [0, 'asc'],
+                ]
             });
             loadScoreboardData();
         });
@@ -500,12 +511,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script>
         "use strict";
+        document.addEventListener('DOMContentLoaded', function() {
+        const tetrisBackSound = document.getElementById('tetrisBackgroundMusic');
+            tetrisBackSound.addEventListener('loadedmetadata', function() {
+                tetrisBackSound.volume = 0.7
+                tetrisBackSound.play();
+            });
+        });
+        const buttonClick = document.getElementById('buttonSound');
+        const gameOverSound = document.getElementById('gameOverSound');
+        const tetrisDrop = document.getElementById('tetrisDropSound');
+        const clearSound = document.getElementById('lineClear');
         const canvas = document.getElementById("tetris");
-        document.getElementById('comandos').blur();
-        document.getElementById('startButton').blur()
-        const botaoStart = document.getElementById('startButton').blur();
-        const context = canvas.getContext("2d");  
+        const botaoStart = document.getElementById('startButton');
+        const context = canvas.getContext("2d");
         context.scale(20, 20);  
+
         function arenaSweep() {  
             let rowCount = 1;  
             outer: for (let y = arena.length - 1; y > 0; --y) {  
@@ -517,6 +538,7 @@
                 const row = arena.splice(y, 1)[0].fill(0);  
                 arena.unshift(row);  
                 ++y;  
+                lineClearSound();
                 player.score += rowCount * 10;  
                 rowCount *= 3;  
             }  
@@ -628,7 +650,8 @@
                 });  
             });  
         }
-       function drawNextPiece(piece) {
+
+        function drawNextPiece(piece) {
             const canvasNextPiece = document.getElementById("nextPiece");
             const contextNextPiece = canvasNextPiece.getContext("2d"); 
 
@@ -680,6 +703,13 @@
             });
         }
 
+        function buttonClickSound(){
+            buttonClick.play();
+        }
+        
+        function lineClearSound(){
+            clearSound.play();
+        }
 
         function draw() {  
             context.fillStyle = "#000";  
@@ -758,7 +788,7 @@
             player.pos.x = Math.floor((arena[0].length / 2) - (player.matrix[0].length / 2));
             
             if (collide(arena, player)) {
-                gameOver();
+                gameOver(player.level);
                 return;
             }
             pieceFrequency[selectedPiece]++;
@@ -786,16 +816,41 @@
             playerReset();
             update(); 
             document.getElementById('gameOverScreen').style.display = 'none';
-            dropInterval = 500;  
+            dropInterval = 500;     
             player.score = 0;
             updateScore();
             startLevelUpdate()
+            event.preventDefault();
         }
         function showGameOver() {
             document.getElementById('gameOverScreen').style.display = 'block';
         }
+        // Defina uma variável para controlar o intervalo de atualização do nível
+        let levelUpdateInterval;
 
-        function gameOver() {
+        // Função para atualizar o nível do jogador com base no tempo decorrido
+        function updateLevel() {
+            player.level++; // Aumenta o nível do jogador
+            dropInterval -= 20; // Reduz o intervalo de queda para aumentar a velocidade do jogo
+            showLevel(); // Atualiza a exibição do nível
+        }
+        // Função para iniciar o intervalo de atualização do nível
+        function startLevelUpdate() {
+            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos
+        }
+
+        // Função para parar o intervalo de atualização do nível (se necessário)
+        function stopLevelUpdate() {
+            clearInterval(levelUpdateInterval);
+        }
+
+        // Função para exibir o nível do jogador
+        function showLevel() {
+            let nivelJogador = String(player.level).padStart(3, '0');
+            document.getElementById("nivel").innerText = "Level: " + nivelJogador;
+        }
+        function gameOver(nivelJogador) {
+            gameOverSound.play();
             showGameOver();
             console.log("Game Over!");
             dropInterval = 9999999;
@@ -810,7 +865,8 @@
             const date = new Date().toLocaleDateString();
             const score = player.score;
 
-            addScoreToTable(playerName, playerPartnerName, date, score);
+
+            addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date);
 
             saveScoreboardData();
         }
@@ -861,33 +917,8 @@
                 });
             });
         }
-        // Defina uma variável para controlar o intervalo de atualização do nível
-        let levelUpdateInterval;
 
-        // Função para atualizar o nível do jogador com base no tempo decorrido
-        function updateLevel() {
-            player.level++; // Aumenta o nível do jogador
-            dropInterval -= 30; // Reduz o intervalo de queda para aumentar a velocidade do jogo
-            showLevel(); // Atualiza a exibição do nível
-        }
-
-        // Função para iniciar o intervalo de atualização do nível
-        function startLevelUpdate() {
-            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos
-        }
-
-        // Função para parar o intervalo de atualização do nível (se necessário)
-        function stopLevelUpdate() {
-            clearInterval(levelUpdateInterval);
-        }
-
-        // Função para exibir o nível do jogador
-        function showLevel() {
-            let nivelJogador = String(player.level).padStart(3, '0');
-            document.getElementById("nivel").innerText = "Level: " + nivelJogador;
-        }
-
-        function addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date, deleteButton) {
+        function addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date) {
             if (scoreboardTable) {
                 const deleteButton = `<button class="botao-de-exclusao" onclick="deleteScore(event)"></button>`;
                 scoreboardTable.row.add([
@@ -896,14 +927,9 @@
                     nivelJogador,
                     score,
                     date,
-                    deleteButton
+                    deleteButton,
                 ])  .draw(); 
             }
-
-
-                // ache o problema com a coluna 4 //
-
-
         }
         function deleteScore(event) {
             const row = event.target.closest('tr');
@@ -966,6 +992,7 @@
             }  
             else if (event.keyCode === 32) { // Tecla de espaço para hard drop
                 playerHardDrop();
+                tetrisDrop.play();
             }
         });  
         const arenaNextPiece = createMatrix(5, 5);
