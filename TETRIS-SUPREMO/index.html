@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> <!--Collapse-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.dataTables.css"> <!--Datatable-->
     <style>
-        :root{
+        :root{ 
             --corPagina: rgb(0, 4, 255);  ;
         }
-        *{
+        *{ 
             margin: 0;
             box-sizing: border-box;
         }
@@ -187,23 +187,23 @@
     </style>
 </head>
 <body>
-    <div class="tudo">
-        <div id="gameOverScreen" style="display: none;">
+    <div class="tudo"> <!--Div englobando tudo-->
+        <div id="gameOverScreen" style="display: none;"> <!--Tela de Game Over fica hidden até o gatilho ser ativo-->
             <h1>Game Over!</h1>
         </div>
-        <div class="leftside">
+        <div class="leftside">  <!--Div englobando a parte esquerda com os botões, score, etc-->
             <div id="canva-score">
                 <div id="score"></div>
                 <div id="nivel"></div>
-                <canvas id="nextPiece" width="80" height="80"></canvas>
+                <canvas id="nextPiece" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
             </div>
-            <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo">
+            <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
             <div class="botoes">
                 <button onclick="start(), buttonClickSound()" id="startButton">Start</button>
-                <button onclick= "buttonClickSound()" id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <button onclick= "buttonClickSound()" id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"> <!--Func "buttonClickSound responsável pelo som de click do mine"-->
                     Comandos
                 </button>
-                <div class="collapse" id="collapseExample">
+                <div class="collapse" id="collapseExample"> <!--Collapse com os comandos-->
                     <div class="cartao">
                         < >: Mover<br>
                         🡣: Descer<br>
@@ -212,47 +212,54 @@
                         Espaco: Hard Drop
                     </div>
                 </div>
-                <button onclick= "buttonClickSound()" type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg">
+                <button onclick= "buttonClickSound()" type="button" id="botao-score" data-toggle="modal" data-target=".bd-example-modal-lg"> <!--Modal com scoreboard-->
                     Score Board
                 </button> 
                 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <table id="example" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>Sobrenome</th>
-                                    <th>Level</th>
-                                    <th>Score</th>
-                                    <th>Data</th>
-                                    <th>Excluir</th>
-                                </tr>
-                            </thead>
-                            <tbody id="scoreboardBody">
-                            </tbody>
-                        </table>
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <table id="example" class="display" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Sobrenome</th>
+                                        <th>Level</th>
+                                        <th>Score</th>
+                                        <th>Data</th>
+                                        <th>Excluir</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scoreboardBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
         <div class="rightSide">
-            <canvas id="tetris" width="240" height="400"></canvas>
+            <canvas id="tetris" width="240" height="400"></canvas> <!--Canvas principal com o jogo-->
         </div>
     </div>
-    <audio id="gameOverSound" src="/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
-    <audio id="tetrisDropSound" src="/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
-    <audio id="tetrisBackgroundMusic" src="/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
-    <audio id="buttonSound" src="/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
-    <audio id="lineClear" src="/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script>
+
+    <!--Audios utilizados-->
+
+    <audio id="gameOverSound" src="/TETRIS-SUPREMO/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
+    <audio id="tetrisDropSound" src="/TETRIS-SUPREMO/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
+    <audio id="tetrisBackgroundMusic" src="/TETRIS-SUPREMO/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
+    <audio id="buttonSound" src="/TETRIS-SUPREMO/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
+    <audio id="lineClear" src="/TETRIS-SUPREMO/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!--Importação do Jquery-->
+    <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script> <!--Datatale-->
+
+    <!--Script Responsável pela iniciação da Datatable-->
+
     <script>
         let scoreboardTable;
         $(document).ready(function() {
-            scoreboardTable = $('#example').DataTable({
-                language: {
+            scoreboardTable = $('#example').DataTable({ 
+                language: { // Tradução da datatable //
                     "emptyTable": "Nenhum registro encontrado",
                     "info": "",
                     "infoFiltered": "(Filtrados de _MAX_ registros)",
@@ -497,22 +504,31 @@
                     "processing": "Carregando...",
                     "searchPlaceholder": "Buscar registros"
                 },
-                order: [
+                order: [ // Ordenação da datatable com base em score, level, data e nome //
                     [3, 'desc'],
                     [2, 'desc'],
                     [4, 'asc'],
                     [0, 'asc'],
                 ]
             });
-            loadScoreboardData();
+            loadScoreboardData(); // Carregamos as informações salvas no dispositivo assim que carrega a datatable //
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--Mais importações de collapse e modal-->
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+    <!--Código Principal do jogo-->
+
     <script>
-        "use strict";
+        "use strict"; //Prevenção de erros de sintaxe, etc//
         document.addEventListener('DOMContentLoaded', function() {
-        const tetrisBackSound = document.getElementById('tetrisBackgroundMusic');
+        const tetrisBackSound = document.getElementById('tetrisBackgroundMusic'); //Adição do som de fundo//
             tetrisBackSound.addEventListener('loadedmetadata', function() {
                 tetrisBackSound.volume = 0.7
                 tetrisBackSound.play();
@@ -522,49 +538,49 @@
         const gameOverSound = document.getElementById('gameOverSound');
         const tetrisDrop = document.getElementById('tetrisDropSound');
         const clearSound = document.getElementById('lineClear');
-        const canvas = document.getElementById("tetris");
         const botaoStart = document.getElementById('startButton');
-        const context = canvas.getContext("2d");
-        context.scale(20, 20);  
+        const canvas = document.getElementById("tetris"); // Achamos o canvas //
+        const context = canvas.getContext("2d"); // Definimos ele como 2d através do context//
+        context.scale(20, 20); // Passamos uma escala pra esse contexto //
 
-        function arenaSweep() {  
-            let rowCount = 1;  
-            outer: for (let y = arena.length - 1; y > 0; --y) {  
-                for (let x = 0; x < arena[y].length; ++x) {  
-                    if (arena[y][x] === 0) {  
+        function arenaSweep() {   // Função responsável por limpar as linhas da arena e contabilizar pontos //
+            let rowCount = 1;  // Definimos a contagem das linhas em 1, é responsável por saber quantas linhas foram removidas de uma vez //
+            outer: for (let y = arena.length - 1; y > 0; --y) { // Outer é um comando que permite que você de "break" em um loop externo utilizando um loop interno. Esse loop é responsável por percorrer as linhas e células da arena, começando da ultima e indo ate a primeira. //
+                for (let x = 0; x < arena[y].length; ++x) {  // Aqui no caso, atravessa as células da linha atual. //
+                    if (arena[y][x] === 0) {  // Se o valor das posições x e y for 0, ele continua com a verificação ignorando a linha atual
                         continue outer;  
                     }  
                 }
-                const row = arena.splice(y, 1)[0].fill(0);  
-                arena.unshift(row);  
-                ++y;  
-                lineClearSound();
-                player.score += rowCount * 10;  
+                const row = arena.splice(y, 1)[0].fill(0); // Caso a linha inteira esteja preenchida com 0, ela é repreenchida com 0, assim, limpando a linha //
+                arena.unshift(row); // Agora, essa mesma linha é adicionada a parte decima da arena, fazendo com que as outras linhas venham pra baixo
+                ++y; // O ++y é responsável por pular a linha impedindo que o looping externo limpe a linha novamente (causando um bug) //
+                lineClearSound(); // Sonzinho pra quando limpar a linha //
+                player.score += rowCount * 10; // O score do jogador é a quantia de linhas que ele quebrou * 10, se ja houver score anterior, é somado ao score "novo" que o jogador fez. Exemplo: eu quebrei 2 linhas, esse valor vai ser multiplicado por 10, dito isso, 2x10 = 20. esse valor vai ser multiplicado por 3 na próxima linha do código, dito isso, se eu quebrar mais linhas, (até um máximo de 4), mais pontos eu faço. //
                 rowCount *= 3;  
             }  
         }  
-        function collide(arena, player) {  
-            const m = player.matrix;  
-            const o = player.pos;  
-            for (let y = 0; y < m.length; ++y) {  
-                for (let x = 0; x < m[y].length; ++x) {  
-                    if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {  
-                        return true;  
+        function collide(arena, player) {  // Função para verificarmos a colisão da peça do jogador com as paredes, fundo da arena ou com outras peças. //
+            const m = player.matrix; // Definimos M como a matriz do jogador (peça atual) //
+            const o = player.pos; // Definimos O como a posição atual do jogador //
+            for (let y = 0; y < m.length; ++y) { // Looping externo responsável por verificar se no eixo Y, irá haver colisão //
+                for (let x = 0; x < m[y].length; ++x) { // Mesma coisa para o eixo X //
+                    if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {  // Este if é responsável por verificar se os valores de X e Y do jogador e da arena são diferentes de zero, levando em consideração de que ambos só serão considerados colididos caso estejam no mesmo espaço da matriz. //
+                        return true; // Retorna true caso tenha 2 valores diferentes de 0 no mesmo espaço //
                     }  
                 }  
             }  
-            return false;  
+            return false;
         }  
-        function createMatrix(w, h) {  
-            const matrix = [];  
-            while (h--) {  
-                matrix.push(new Array(w).fill(0));  
+        function createMatrix(w, h) {  // Função para criar a matrix do jogo de acordo com a altura e largura desejados. Nada muito complexo //
+            const matrix = []; // A matrix é definida como uma array vazia //
+            while (h--) {  // Enquanto a altura estiver diminuindo, ele continau preenchendo a matrix com "0" //
+                matrix.push(new Array(w).fill(0));
             }  
-            return matrix;  
+            return matrix; // Dito isso, agora a função retorna a matrix como uma array preenchida com "0" em toda a sua altura e largura. //
         }  
-        function createPiece(type) {  
+        function createPiece(type) {  // Função para a criação das peças //
             if (type === "I") {  
-                return [  
+                return [ // Brinque como quiser com o formato dessas peças KASKASKKAS //
                     [0, 1, 0, 0],  
                     [0, 1, 0, 0],  
                     [0, 1, 0, 0],  
@@ -607,10 +623,10 @@
                 ];  
             }  
         }  
-        function drawMatrix(matrix, offset) {  
+        function drawMatrix(matrix, offset) { // Esta função é responsável por dar cor as peças e desenhar elas no campo, mas ela só será chamada daqui a pouco //
             matrix.forEach((row, y) => {  
                 row.forEach((value, x) => {  
-                    if (value !== 0) {
+                    if (value !== 0) { // Aqui passamos por cada valor diferente de 0 no eixo X e Y de uma peça, dito isso, caso o valor seja diferente de "0", ("1","2","3", etc) a função pinta a célula de acordo com a peça. (Caso seja "1", "2" e assim por diante). //
                         const gradient = context.createLinearGradient(x + offset.x, y + offset.y, x + offset.x + 1, y + offset.y + 1);
                         switch(value) {
                             case 1: // Peça I (Vermelho neon)
@@ -651,16 +667,16 @@
             });  
         }
 
-        function drawNextPiece(piece) {
+        function drawNextPiece(piece) { // Função responsável por criar o quadradinho que mostra a proxima peça (e já mostrar ela como consequência) //
             const canvasNextPiece = document.getElementById("nextPiece");
-            const contextNextPiece = canvasNextPiece.getContext("2d"); 
+            const contextNextPiece = canvasNextPiece.getContext("2d"); // Definimos o mesmo contexto de 2d, mas dessa vez não damos os parâmetros anteriores de 20x20 //
 
-            contextNextPiece.clearRect(0, 0, canvasNextPiece.width, canvasNextPiece.height);
+            contextNextPiece.clearRect(0, 0, canvasNextPiece.width, canvasNextPiece.height); // Esta linha da clear no quadradinho para previnir que não haja alguma peça ali e quando a outra aparecer, não acabar sobrescrevendo a anterior //
 
-            const cellSize = canvasNextPiece.width / 5;
-            const offsetX = (canvasNextPiece.width - piece[0].length * cellSize) / 2;
+            const cellSize = canvasNextPiece.width / 5; // Definimos um quadradinho de "5x5" //
+            const offsetX = (canvasNextPiece.width - piece[0].length * cellSize) / 2; // Estas duas linhas são responsáveis pela localização da peça no quadradinho, se vai ser no centro ou onde der pra ajustar //
             const offsetY = (canvasNextPiece.height - piece.length * cellSize) / 2; 
-            piece.forEach((row, y) => {
+            piece.forEach((row, y) => { // Aqui fazemos a mesma coisa da func anterior para dar cor as peças que irão aparecer //
                 row.forEach((value, x) => {
                     if (value !== 0) {
                         const gradient = contextNextPiece.createLinearGradient(x * cellSize + offsetX, y * cellSize + offsetY, (x + 1) * cellSize + offsetX, (y + 1) * cellSize + offsetY);
@@ -702,6 +718,8 @@
                 });
             });
         }
+        
+        // Duas func de som que tão meio perdidas ai //
 
         function buttonClickSound(){
             buttonClick.play();
@@ -711,65 +729,65 @@
             clearSound.play();
         }
 
-        function draw() {  
-            context.fillStyle = "#000";  
-            context.fillRect(0, 0, canvas.width, canvas.height);  
-            drawMatrix(arena, {x: 0, y: 0});  
-            drawGhostPiece();
-            drawMatrix(player.matrix, player.pos);  
+        function draw() {  // Func responsável por fazer o fundinho da arena //
+            context.fillStyle = "#000"; // Definimos o fundinho como preto (experimenta por rosa pra vc ver que engraçado) //
+            context.fillRect(0, 0, canvas.width, canvas.height); // Colocamos essa cor em toda a extenção do canva //
+            drawMatrix(arena, {x: 0, y: 0}); // Colocação da peça em campo no local (arena) e posição que queremos. //
+            drawGhostPiece(); // Optei por colocar a função de ghostpiece aqui pois assim que surge alguma peça, já é identificada qual peça é e em qual posição ela está com base no offset (posição) dela. Mais tarde essa função vai ser melhor explicada //
+            drawMatrix(player.matrix, player.pos); // Chamamos novamente a draw matrix para a matriz e para a posição atual do jogador, definida no final do código //
         }  
-        function merge(arena, player) {  
+        function merge(arena, player) {  // Função para integrar a peça ao campo, junto a matriz e as outras peças do jogador //
             player.matrix.forEach((row, y) => {  
             row.forEach((value, x) => {  
-                if (value !== 0) {  
+                if (value !== 0) {  // Percorremos novamente por cada linha e em cada célula verificando se o valor é diferente de 0. Se for, ele define que essa posição atual da peça agora será o novo valor nas posições x e y tanto da arena quanto do jogador. //
                 arena[y + player.pos.y][x + player.pos.x] = value;  
                 }  
             });  
         });  
         }  
-        function rotate(matrix, dir) {  
-            for (let y = 0; y < matrix.length; ++y) {  
-                for (let x = 0; x < y; ++x) {  
-                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];  
+        function rotate(matrix, dir) { // Func responsável por rotacionar a peça //
+            for (let y = 0; y < matrix.length; ++y) { 
+                for (let x = 0; x < y; ++x) { 
+                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]]; // Dentro do loop, os elementos são trocados de posição, então, o que era x vira y e o que era y vira x (bem confuso) // 
                 }  
             }  
-            if (dir > 0) {  
+            if (dir > 0) { // Se o valor for positivo, rotaciona em sentido horário, se for negativo, rotaciona no inverso (anti-horário) //
                 matrix.forEach((row) => row.reverse());  
             } 
             else {  
                 matrix.reverse();  
             }  
-        }  
-        function playerDrop() {
+        } 
+        function playerDrop() { // Func para a peça simplesmente cair //
             player.pos.y++;
-            if (collide(arena, player)) {
-                player.pos.y--;
-                merge(arena, player);
-                playerReset();
-                arenaSweep();
-                updateScore();
+            if (collide(arena, player)) { // Se colidir com alguma coisa enquanto estiver caindo: volta 1 posição do eixo y para que a peça não fique dentro da outra. Irei tentar explicar por texto como funciona a colisão: Se a peça entrar dentro da arena ou de outra peça (cujos valores são diferentes de 0), a func collide retorna o valor true, dizendo que ali houve colisão de dois corpos. //
+                player.pos.y--; // Dito isso, agora volta 1 posição //
+                merge(arena, player); // Integra a posição daquela peça a arena fazendo com que fique "fixa" ali //
+                playerReset(); // Faz uma nova peça aparecer no campo //
+                arenaSweep(); // Chama a função que percorre a arena para verificar se houve uma linha inteira preenchida com valor diferente de 0, se houver, já limpa e conta a pontuação //
+                updateScore(); // Atualiza o score do jogador //
             }
-            dropCounter = 0;
+            dropCounter = 0; // Define também a contagem de "dropagem" (não consigo pensar em outro termo) em 0. //
         }
-        function playerMove(offset) {  
-            player.pos.x += offset;  
-            if (collide(arena, player)) {  
+        function playerMove(offset) {  // Função para mover a peça do jogador. //
+            player.pos.x += offset;  // Posição no eixo X do jogador somada a posição passada no parâmetro //
+            if (collide(arena, player)) {  // Se colidir, o eixo X do jogador é impedido de progredir pois sempre será subtraida pela posição //
                 player.pos.x -= offset;  
             }  
         }  
 
-        let shuffledPieces = shufflePieces();
+        let shuffledPieces = shufflePieces(); // Definimos uma variável com as peças embaralhadas //
 
-        function shufflePieces() {
-            const pieces = "TJLOSZI".split('');
-            // Embaralhe as peças usando o algoritmo de Fisher-Yates
-            for (let i = pieces.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+        function shufflePieces() { // Func para embaralhar as peças (balancear o jogo) //
+            const pieces = "TJLOSZI".split(''); // Pegamos todas as peças e dividimos todas em strings únicas //
+            // Embaralhe as peças usando o algoritmo de Fisher-Yates //
+            for (let i = pieces.length - 1; i > 0; i--) { // Looping para sempre pegar peças diferentes e nunca repetir duas peças seguidas //
+                const j = Math.floor(Math.random() * (i + 1)); // Faz aquela parada maluca do fisher-yates que nao sei explicar //
                 [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
             }
-            return pieces;
+            return pieces; // Retorna essas peças agora embaralhadas //
         }
-        const pieceFrequency = {
+        const pieceFrequency = { // Define que cada uma das peças agora tem um valor inicial de "0", que logo será aumentado //
             "T": 0,
             "J": 0,
             "L": 0,
@@ -778,31 +796,30 @@
             "Z": 0,
             "I": 0
         };
-        function playerReset() {
-            const selectedPiece = shuffledPieces.pop();
+        function playerReset() { // Função que faz a peça aparecer no campo //
+            const selectedPiece = shuffledPieces.pop(); // Pegamos a peça que irá aparecer e dizemos que essa peça será a última peça do array de peças embaralhadas // 
             
-            drawNextPiece(createPiece(shuffledPieces[shuffledPieces.length - 1]));
+            drawNextPiece(createPiece(shuffledPieces[shuffledPieces.length - 1])); // aqui dizemos que a próxima peça a aparecer no quadradinho de próximas peças, será o valor das peças embaralhadas - 1, dito isso, será uma peça depois da peça atualmente em campo. //
             
-            player.matrix = createPiece(selectedPiece);
-            player.pos.y = 0;
+            player.matrix = createPiece(selectedPiece); // Criamos a peça com a peça já escolhida das peças embaralhadas //
+            player.pos.y = 0; // Definimos que ela irá aparecer nesta posição do eixo Y e X //
             player.pos.x = Math.floor((arena[0].length / 2) - (player.matrix[0].length / 2));
             
-            if (collide(arena, player)) {
+            if (collide(arena, player)) { // Se agora a peça do jogador colidir com a nova peça desenhada, será retornada a função de gameOver, que para o jogo, já já chegamos nela. //
                 gameOver(player.level);
                 return;
             }
-            pieceFrequency[selectedPiece]++;
+            pieceFrequency[selectedPiece]++; // Aqui aumentamos a frequência de peças daquela array anterior que definimos como 0, essa frequência será adicionada com base na peça selecionada atualmente, fazendo com que sempre haja esse balanceamento correto das peças //
 
-            shuffledPieces.unshift(selectedPiece);
+            shuffledPieces.unshift(selectedPiece); // Faz com que a peça selecionada seja adicionada ao array de peças embaralhadas na última posição, fazemdo com que haja uma fila que será sempre reembaralhada //
         }
 
-
-        function playerRotate(dir) {  
-            const pos = player.pos.x;  
-            let offset = 1;  
-            rotate(player.matrix, dir);  
-            while (collide(arena, player)) {  
-                player.pos.x += offset;  
+        function playerRotate(dir) {  // Func que irá rotacionar a peça //
+            const pos = player.pos.x; // Definie a posição como a posição X do jogador para caso não seja possível rotacionar, sendo assim, volta a posição original //
+            let offset = 1; // Define a posição offset como 1 //
+            rotate(player.matrix, dir); // Chama a func rotate com os parâmetros da peça do jogador e em qual posição ele irá rotacionar (positiva ou negativa)
+            while (collide(arena, player)) { // Definimos um loop para caso a peça esteja colidindo com algum elemento //
+                player.pos.x += offset; // Basicamente nas linhas abaixo, os valores são verificados para compreender se serão positivos ou negativos. Caso haja um valor positivo, a peça tentará rotacionar para a direita, enquanto o contrário ocorrerá para o outro lado. Quando chegamos no if, ele verifica se há possibilidade de rotacionar para qualquer lado, se não for possível, só retornamos a posição original (salva na constante "pos"). //
                 offset = -(offset + (offset > 0 ? 1 : -1));  
                 if (offset > player.matrix[0].length) {  
                     rotate(player.matrix, -dir);  
@@ -811,78 +828,81 @@
                 }  
             }  
         }
-        function start(){
-            arena.forEach((row) => row.fill(0));
-            playerReset();
-            update(); 
-            document.getElementById('gameOverScreen').style.display = 'none';
-            dropInterval = 500;     
-            player.score = 0;
-            updateScore();
-            startLevelUpdate()
-            event.preventDefault();
+        function start(){ // Função para começar o jogo //
+            $('#startButton').blur(); // Tiramos o foco do botão //
+            arena.forEach((row) => row.fill(0)); // Primeiro limpamos toda a arena para caso houvesse alguma peça nela (caso seja a segunda vez jogando) //
+            playerReset(); // Chamamos a função que gera peça //
+            update(); // Chamamos a função que atualiza o jogo a todo instante //
+            document.getElementById('gameOverScreen').style.display = 'none'; // Definimos que agora a tela de gameOver deve estar escondida dnv caso seja a segunda vez jogando (ou mais) //
+            dropInterval = 1000; // Definimos novamente o drop interval para 500 //
+            player.score = 0; // O score é resetado para 0 também //
+            updateScore(); // Atualizamos o score na tela //
+            stopLevelUpdate(); // Pare o intervalo de atualização do nível antes de iniciar um novo jogo //
+            player.level = 0; // Redefina o nível do jogador para o valor inicial //
+            showLevel(); // Mostramos o lvl atualizado na tela //
+            startLevelUpdate(); // Começamos novamente a contar o level //
         }
-        function showGameOver() {
+        function showGameOver() { // Só mostramos a tela de gameOver na tela //
             document.getElementById('gameOverScreen').style.display = 'block';
         }
         // Defina uma variável para controlar o intervalo de atualização do nível
-        let levelUpdateInterval;
+        let levelUpdateInterval; // Variável que vai armazenar o intervalo que o lvl vai aumentar //
 
-        // Função para atualizar o nível do jogador com base no tempo decorrido
+        // Função para atualizar o nível do jogador com base no tempo decorrido //
         function updateLevel() {
-            player.level++; // Aumenta o nível do jogador
-            dropInterval -= 20; // Reduz o intervalo de queda para aumentar a velocidade do jogo
-            showLevel(); // Atualiza a exibição do nível
+            player.level++; // Aumenta o nível do jogador //
+            dropInterval -= 20; // Reduz o intervalo de queda para aumentar a velocidade do jogo //
+            showLevel(); // Atualiza a exibição do nível //
         }
-        // Função para iniciar o intervalo de atualização do nível
+        // Função para iniciar o intervalo de atualização do nível //
         function startLevelUpdate() {
-            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos
+            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos //
         }
 
-        // Função para parar o intervalo de atualização do nível (se necessário)
+        // Função para parar o intervalo de atualização do nível (se necessário) //
         function stopLevelUpdate() {
             clearInterval(levelUpdateInterval);
         }
 
-        // Função para exibir o nível do jogador
+        // Função para exibir o nível do jogador //
         function showLevel() {
-            let nivelJogador = String(player.level).padStart(3, '0');
-            document.getElementById("nivel").innerText = "Level: " + nivelJogador;
+            let nivelJogador = String(player.level).padStart(3, '0'); // Colocamos 3 zeros na tela //
+            document.getElementById("nivel").innerText = "Level: " + nivelJogador; // Adicionamos o lvl atual com a string "Level" //
         }
-        function gameOver(nivelJogador) {
-            gameOverSound.play();
-            showGameOver();
-            console.log("Game Over!");
-            dropInterval = 9999999;
-            player.pos.y = -10;
-            stopLevelUpdate()
-            let playerName = prompt("Digite seu nome:");
+        function gameOver(nivelJogador) { // Função que acaba com o jogo (o parâmetro está ai pois foi a única maneira que consegui incluir o level atual do jogador na datatable) //
+            gameOverSound.play(); // Toca o som de fim //
+            showGameOver(); // Mostra a tela de game over //
+            console.log("Game Over!"); // Console Log //
+            dropInterval = 9999999; // Drop Interval infinito pra nao cair nenhuma peça //
+            player.pos.y = -10; // Jogamos as peças 10 px pra cima do canvas, assim ngm vai ver a peça ali paradinha //
+            stopLevelUpdate() // Paramos a contagem de lvl //
+            let playerName = prompt("Digite seu nome:"); // Perguntamos o nome e sobrenome //
             let playerPartnerName = prompt("Digite o seu sobrenome:");
 
-            playerName = playerName.substring(0, 14);
+            playerName = playerName.substring(0, 14); // Máximo de 14 caracteres para ambos //
             playerPartnerName = playerPartnerName.substring(0, 14);
 
-            const date = new Date().toLocaleDateString();
+            const date = new Date().toLocaleDateString(); // Salvamos a data e score atual do jogador //
             const score = player.score;
 
 
             addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date);
 
-            saveScoreboardData();
+            saveScoreboardData(); // Salvamos as informações do scoreboard nesta função //
         }
-        function playerHardDrop() {
-            const originalPos = { ...player.pos };
-            while (!collide(arena, player)) {
+        function playerHardDrop() { // função de HardDrop //
+            const originalPos = { ...player.pos }; // Copiamos a posição atual do jogador nesta constante //
+            while (!collide(arena, player)) { // Enquanto não colidir, aumenta o Y o máximo que conseguir //
                 player.pos.y++;
             }
-            player.pos.y--;
-            if (!collide(arena, player)) {
-                var moveDelay = 100;
-                let currentTime = performance.now();
-                let allowMove = true;
+            player.pos.y--; // Voltamos 1 quando colidir //
+            if (!collide(arena, player)) { // Como voltamos uma posição, agora enquanto não colidir, podemos mover a peça para os lados depois de dar hard drop para podermos fazer a jogadinha 😎 //
+                var moveDelay = 100; // Delay de 100 ms para ser difícel de fazer a jogadinha //
+                let currentTime = performance.now(); // Usamos performance pois como queremos ter uma precisão muito exata, o performance é o único que consegue entregar tanta precisão de resposta //
+                let allowMove = true; // Permitimos o movimento //
 
                 const moveHandler = (event) => {
-                    if (allowMove) {
+                    if (allowMove) { // Se for permitido o movimento, escreva sua história 🤠 //
                         if (event.keyCode === 37) { 
                             playerMove(-1);
                             allowMove = false; 
@@ -901,14 +921,14 @@
             }
         }
 
-        function drawGhostPiece() {
-            let ghostPiecePosition = { ...player.pos };
-            while (!collide(arena, { matrix: player.matrix, pos: { ...ghostPiecePosition } })) {
+        function drawGhostPiece() { // Func que irá desenhar a peça fantasma na arena //
+            let ghostPiecePosition = { ...player.pos }; // Copia a posição do jogador //
+            while (!collide(arena, { matrix: player.matrix, pos: { ...ghostPiecePosition } })) { // Enquanto a peça copiada do jogador não colidir com a arena, ele incrementa a ghostpiece no eixo y //
                 ghostPiecePosition.y++;
             }
-            ghostPiecePosition.y--;
+            ghostPiecePosition.y--; // Quando colidir, volta 1 posição do eixo Y //
 
-            player.matrix.forEach((row, y) => {  
+            player.matrix.forEach((row, y) => { // Definimos uma corzinha transparente e escura para a peça fantasma //
                 row.forEach((value, x) => {  
                     if (value !== 0) {
                         context.fillStyle = 'rgba(255, 255, 255, 0.2)';
@@ -917,11 +937,11 @@
                 });
             });
         }
-
-        function addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date) {
+ 
+        function addScoreToTable(playerName, playerPartnerName, nivelJogador, score, date) { // Função para adicionar todas as informações salvas anteriormente na datatable //
             if (scoreboardTable) {
                 const deleteButton = `<button class="botao-de-exclusao" onclick="deleteScore(event)"></button>`;
-                scoreboardTable.row.add([
+                scoreboardTable.row.add([ // Adiciona essas informações na datatable //
                     playerName,
                     playerPartnerName,
                     nivelJogador,
@@ -931,49 +951,52 @@
                 ])  .draw(); 
             }
         }
-        function deleteScore(event) {
-            const row = event.target.closest('tr');
+        function deleteScore(event) { // Função para apagar a linha da datatable com o botaozinho (essa função é chamada no "deleteButton" // 
+            const row = event.target.closest('tr'); // Identificamos o TR mais próximo e definimos que ele será nossa constante "row" (linha) //
             const rowIndex = scoreboardTable.row(row).index(); // Obtém o índice da linha na tabela
-            const data = JSON.parse(localStorage.getItem('scoreboardData'));
+            const data = JSON.parse(localStorage.getItem('scoreboardData')); // Deifinimos que os dados são as informações salvas dentro do JSON localStorage //
             if (data) {
                 data.splice(rowIndex, 1); // Remove os dados associados ao índice da linha
                 localStorage.setItem('scoreboardData', JSON.stringify(data));
             }
-            scoreboardTable.row(row).remove().draw();
+            scoreboardTable.row(row).remove().draw(); // Removemos a linha //
         }
-        function loadScoreboardData() {
-            const data = localStorage.getItem('scoreboardData');
+        function loadScoreboardData() { // Carregamos as informações anteriormente salvas no localStorage //
+            const data = localStorage.getItem('scoreboardData'); // Pegamos as info salvas //
             if (data) {
                 const scoreboardData = JSON.parse(data);
                 scoreboardData.forEach(row => {
-                    addScoreToTable(row[0], row[1], row[2], row[3], row[4], row[5]);
+                    addScoreToTable(row[0], row[1], row[2], row[3], row[4], row[5]); // Adicionamos elas em local certinho //
                 });
             }
-        }
-        function saveScoreboardData() {
-            const data = scoreboardTable.rows().data().toArray();
+        } 
+        function saveScoreboardData() { // Função para salvarmos as informações no localStorage //
+            const data = scoreboardTable.rows().data().toArray(); 
             localStorage.setItem('scoreboardData', JSON.stringify(data));
         }
-        function showControls() {
+        function showControls() { // Collapse que mostra os comandos //
             controlsBox.style.display = "block";
         }
-        let dropCounter = 0;  
-        let dropInterval = 1000;  
-        let lastTime = 0;  
-        function update(time = 0) {  
-            const deltaTime = time - lastTime;  
-            dropCounter += deltaTime;  
-            if (dropCounter > dropInterval) {  
-                playerDrop();  
+        let dropCounter = 0; // Variável que define a contagem de drops em 0 //
+        let dropInterval = 1000; // Variável que define o intervalo de drop das peças em 1000 ms //
+        let lastTime = 0; // Variável que usaremos para atualizar o jogo //
+        function update(time = 0) { // Função para atualizar o jogo a todo o momento //
+            const deltaTime = time - lastTime; // Calcula o intervalo entre o tempo atual e o último atualizado //
+            dropCounter += deltaTime; // Adiciona o tempo atualizado com o dropCounter para controlar a velocidade do jogo //
+            if (dropCounter > dropInterval) { // Verifica se o valor atualizado excede o valor de queda //
+                playerDrop(); // Se sim, cai uma linhazinha
             }  
-            lastTime = time;  
-            draw();  
-            requestAnimationFrame(update);  
+            lastTime = time; // Atualizamos agora o lastTime como o Time atual para que depois, quando a função for chamada novamente, sempre salve a atualização correta //
+            draw(); // Atualiza o jogo //
+            requestAnimationFrame(update); // Inicializa um loop infinito que sempre atualiza o jogo a todo o instante enquanto estiver em execução // 
         }  
-        function updateScore() {  
+        function updateScore() {  // Atualiza o score na tela //
             let formattedScore = String(player.score).padStart(4, '0');  
             document.getElementById("score").innerText = "Score: " + formattedScore;  
         } 
+        
+        // Movimentação do jogador //
+
         document.addEventListener("keydown", (event) => {  
             if (event.keyCode === 37) {  
                 playerMove(-1);  
@@ -995,15 +1018,20 @@
                 tetrisDrop.play();
             }
         });  
+        // Definimmos o quadradinho como 5x5 //
         const arenaNextPiece = createMatrix(5, 5);
+        // Definimos a arena como 12x20 //
         const arena = createMatrix(12, 20);  
+        // Fazemos todas as variações para o player
         const player = {  
             pos: { x: 0, y: 0 },  
             matrix: null,  
             score: 0,  
             level: 0,
         };
+        // Atualizamos o score quando inicia a página //
         updateScore();
+        // Atualizamos o lvl quando inicia a página //
         showLevel();
     </script>
 </body>
