@@ -16,15 +16,15 @@
         }
         @font-face {
             font-family: Arcade_I;
-            src: url(/TETRIS-SUPREMO/fonts/ARCADE_I.TTF);
+            src: url(/fonts/ARCADE_I.TTF);
         }
         @font-face {
             font-family: Arcade_N;
-            src: url(/TETRIS-SUPREMO/fonts/ARCADE_N.TTF);
+            src: url(/fonts/ARCADE_N.TTF);
         }
         @font-face {
             font-family: Arcade_R;
-            src: url(/TETRIS-SUPREMO/fonts/ARCADE_R.TTF);
+            src: url(/fonts/ARCADE_R.TTF);
         }
         body{  
             background: black;
@@ -47,6 +47,19 @@
             height: 25vh;
         }
         #comandos{
+            font-family: Arcade_N;
+            background-color: var(--corPagina);  
+            color: white;
+            border: 10px;
+            border-radius: 10px;
+            height: 50px;
+            cursor: pointer;
+            width: 150px;
+            outline: none;
+        }
+        #salas{
+            display: flex;
+            align-items: center;
             font-family: Arcade_N;
             background-color: var(--corPagina);  
             color: white;
@@ -84,6 +97,8 @@
             cursor: pointer;
             width: 150px;
             outline: none;
+            display: flex;
+            align-items: center;
         }
         #gameOverScreen {
             display: none;
@@ -155,7 +170,7 @@
             outline: 0;
             padding: 37px;
         }
-        .leftside{
+        #leftside{
             display: flex;
             flex-direction: column;
             gap: 30px;            
@@ -177,12 +192,17 @@
             width: 25px;
             border: none;
             background: linear-gradient(68.15deg, #4c92ad 16.62%, #9cc5c7 85.61%);
-            background-image: url(/TETRIS-SUPREMO/img/icone-fermer-et-x-rouge.png);
+            background-image: url(/img/icone-fermer-et-x-rouge.png);
             background-size: cover;
             cursor:pointer
         }
         #nivel{
             color: var(--corPagina);
+        }
+        #rightSide{
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
     </style>
 </head>
@@ -191,15 +211,38 @@
         <div id="gameOverScreen" style="display: none;"> <!--Tela de Game Over fica hidden até o gatilho ser ativo-->
             <h1>Game Over!</h1>
         </div>
-        <div class="leftside">  <!--Div englobando a parte esquerda com os botões, score, etc-->
-            <div id="canva-score">
+        <div id="leftside">  <!--Div englobando a parte esquerda com os botões, score, etc-->
+            <div id="canva-score" style="display: none;">
                 <div id="score"></div>
                 <div id="nivel"></div>
-                <canvas id="nextPiece" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
             </div>
-            <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
+            <img src="/img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
             <div class="botoes">
-                <button onclick="start(), buttonClickSound()" id="startButton">Start</button>
+                <button onclick="start(), buttonClickSound()" id="startButton">Single Player</button>
+                <!-- Button trigger modal -->
+                <button type="button" id="salas" data-toggle="modal" data-target="#exampleModal">
+                    Multi Player
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Deseja Criar Uma Sala?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            Voce precisa de um amigo na mesma rede para jogar um jogo 1 contra 1.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Nao</button>
+                                <button type="button" class="btn btn-primary">Criar Sala</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button onclick= "buttonClickSound()" id="comandos" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"> <!--Func "buttonClickSound responsável pelo som de click do mine"-->
                     Comandos
                 </button>
@@ -237,18 +280,19 @@
                 </div>
             </div>
         </div>
-        <div class="rightSide">
+        <div id="rightSide" style="display: none;">
             <canvas id="tetris" width="240" height="400"></canvas> <!--Canvas principal com o jogo-->
+            <canvas id="nextPiece" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
         </div>
     </div>
 
     <!--Audios utilizados-->
 
-    <audio id="gameOverSound" src="/TETRIS-SUPREMO/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
-    <audio id="tetrisDropSound" src="/TETRIS-SUPREMO/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
-    <audio id="tetrisBackgroundMusic" src="/TETRIS-SUPREMO/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
-    <audio id="buttonSound" src="/TETRIS-SUPREMO/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
-    <audio id="lineClear" src="/TETRIS-SUPREMO/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
+    <audio id="gameOverSound" src="/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
+    <audio id="tetrisDropSound" src="/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
+    <audio autoplay id="tetrisBackgroundMusic" src="/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
+    <audio id="buttonSound" src="/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
+    <audio id="lineClear" src="/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!--Importação do Jquery-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script> <!--Datatale-->
@@ -259,251 +303,6 @@
         let scoreboardTable;
         $(document).ready(function() {
             scoreboardTable = $('#example').DataTable({ 
-                language: { // Tradução da datatable //
-                    "emptyTable": "Nenhum registro encontrado",
-                    "info": "",
-                    "infoFiltered": "(Filtrados de _MAX_ registros)",
-                    "infoThousands": ".",
-                    "loadingRecords": "Carregando...",
-                    "zeroRecords": "Nenhum registro encontrado",
-                    "search": "",
-                    "paginate": {
-                        "next": "",
-                        "previous": "",
-                        "first": "",
-                        "last": ""
-                    },
-                    "aria": {
-                        "sortAscending": ": Ordenar colunas de forma ascendente",
-                        "sortDescending": ": Ordenar colunas de forma descendente"
-                    },
-                    "select": {
-                        "rows": {
-                            "_": "Selecionado %d linhas",
-                            "1": "Selecionado 1 linha"
-                        },
-                        "cells": {
-                            "1": "1 célula selecionada",
-                            "_": "%d células selecionadas"
-                        },
-                        "columns": {
-                            "1": "1 coluna selecionada",
-                            "_": "%d colunas selecionadas"
-                        }
-                    },
-                    "buttons": {
-                        "copySuccess": {
-                            "1": "Uma linha copiada com sucesso",
-                            "_": "%d linhas copiadas com sucesso"
-                        },
-                        "collection": "Coleção  <span class=\"ui-button-icon-primary ui-icon ui-icon-triangle-1-s\"><\/span>",
-                        "colvis": "Visibilidade da Coluna",
-                        "colvisRestore": "Restaurar Visibilidade",
-                        "copy": "Copiar",
-                        "copyKeys": "Pressione ctrl ou u2318 + C para copiar os dados da tabela para a área de transferência do sistema. Para cancelar, clique nesta mensagem ou pressione Esc..",
-                        "copyTitle": "Copiar para a Área de Transferência",
-                        "csv": "CSV",
-                        "excel": "Excel",
-                        "pageLength": {
-                            "-1": "Mostrar todos os registros",
-                            "_": "Mostrar %d registros"
-                        },
-                        "pdf": "PDF",
-                        "print": "Imprimir",
-                        "createState": "Criar estado",
-                        "removeAllStates": "Remover todos os estados",
-                        "removeState": "Remover",
-                        "renameState": "Renomear",
-                        "savedStates": "Estados salvos",
-                        "stateRestore": "Estado %d",
-                        "updateState": "Atualizar"
-                    },
-                    "autoFill": {
-                        "cancel": "Cancelar",
-                        "fill": "Preencher todas as células com",
-                        "fillHorizontal": "Preencher células horizontalmente",
-                        "fillVertical": "Preencher células verticalmente"
-                    },
-                    "lengthMenu": "",
-                    "searchBuilder": {
-                        "add": "Adicionar Condição",
-                        "button": {
-                            "0": "Construtor de Pesquisa",
-                            "_": "Construtor de Pesquisa (%d)"
-                        },
-                        "clearAll": "Limpar Tudo",
-                        "condition": "Condição",
-                        "conditions": {
-                            "date": {
-                                "after": "Depois",
-                                "before": "Antes",
-                                "between": "Entre",
-                                "empty": "Vazio",
-                                "equals": "Igual",
-                                "not": "Não",
-                                "notBetween": "Não Entre",
-                                "notEmpty": "Não Vazio"
-                            },
-                            "number": {
-                                "between": "Entre",
-                                "empty": "Vazio",
-                                "equals": "Igual",
-                                "gt": "Maior Que",
-                                "gte": "Maior ou Igual a",
-                                "lt": "Menor Que",
-                                "lte": "Menor ou Igual a",
-                                "not": "Não",
-                                "notBetween": "Não Entre",
-                                "notEmpty": "Não Vazio"
-                            },
-                            "string": {
-                                "contains": "Contém",
-                                "empty": "Vazio",
-                                "endsWith": "Termina Com",
-                                "equals": "Igual",
-                                "not": "Não",
-                                "notEmpty": "Não Vazio",
-                                "startsWith": "Começa Com",
-                                "notContains": "Não contém",
-                                "notStartsWith": "Não começa com",
-                                "notEndsWith": "Não termina com"
-                            },
-                            "array": {
-                                "contains": "Contém",
-                                "empty": "Vazio",
-                                "equals": "Igual à",
-                                "not": "Não",
-                                "notEmpty": "Não vazio",
-                                "without": "Não possui"
-                            }
-                        },
-                        "data": "Data",
-                        "deleteTitle": "Excluir regra de filtragem",
-                        "logicAnd": "E",
-                        "logicOr": "Ou",
-                        "title": {
-                            "0": "Construtor de Pesquisa",
-                            "_": "Construtor de Pesquisa (%d)"
-                        },
-                        "value": "Valor",
-                        "leftTitle": "Critérios Externos",
-                        "rightTitle": "Critérios Internos"
-                    },
-                    "searchPanes": {
-                        "clearMessage": "Limpar Tudo",
-                        "collapse": {
-                            "0": "Painéis de Pesquisa",
-                            "_": "Painéis de Pesquisa (%d)"
-                        },
-                        "count": "{total}",
-                        "countFiltered": "{shown} ({total})",
-                        "emptyPanes": "Nenhum Painel de Pesquisa",
-                        "loadMessage": "Carregando Painéis de Pesquisa...",
-                        "title": "Filtros Ativos",
-                        "showMessage": "Mostrar todos",
-                        "collapseMessage": "Fechar todos"
-                    },
-                    "thousands": ".",
-                    "datetime": {
-                        "previous": "Anterior",
-                        "next": "Próximo",
-                        "hours": "Hora",
-                        "minutes": "Minuto",
-                        "seconds": "Segundo",
-                        "amPm": [
-                            "am",
-                            "pm"
-                        ],
-                        "unknown": "-",
-                        "months": {
-                            "0": "Janeiro",
-                            "1": "Fevereiro",
-                            "10": "Novembro",
-                            "11": "Dezembro",
-                            "2": "Março",
-                            "3": "Abril",
-                            "4": "Maio",
-                            "5": "Junho",
-                            "6": "Julho",
-                            "7": "Agosto",
-                            "8": "Setembro",
-                            "9": "Outubro"
-                        },
-                        "weekdays": [
-                            "Dom",
-                            "Seg",
-                            "Ter",
-                            "Qua",
-                            "Qui",
-                            "Sex",
-                            "Sáb"
-                        ]
-                    },
-                    "editor": {
-                        "close": "Fechar",
-                        "create": {
-                            "button": "Novo",
-                            "submit": "Criar",
-                            "title": "Criar novo registro"
-                        },
-                        "edit": {
-                            "button": "Editar",
-                            "submit": "Atualizar",
-                            "title": "Editar registro"
-                        },
-                        "error": {
-                            "system": "Ocorreu um erro no sistema (<a target=\"\\\" rel=\"nofollow\" href=\"\\\">Mais informações<\/a>)."
-                        },
-                        "multi": {
-                            "noMulti": "Essa entrada pode ser editada individualmente, mas não como parte do grupo",
-                            "restore": "Desfazer alterações",
-                            "title": "Multiplos valores",
-                            "info": "Os itens selecionados contêm valores diferentes para esta entrada. Para editar e definir todos os itens para esta entrada com o mesmo valor, clique ou toque aqui, caso contrário, eles manterão seus valores individuais."
-                        },
-                        "remove": {
-                            "button": "Remover",
-                            "confirm": {
-                                "_": "Tem certeza que quer deletar %d linhas?",
-                                "1": "Tem certeza que quer deletar 1 linha?"
-                            },
-                            "submit": "Remover",
-                            "title": "Remover registro"
-                        }
-                    },
-                    "decimal": ",",
-                    "stateRestore": {
-                        "creationModal": {
-                            "button": "Criar",
-                            "columns": {
-                                "search": "Busca de colunas",
-                                "visible": "Visibilidade da coluna"
-                            },
-                            "name": "Nome:",
-                            "order": "Ordernar",
-                            "paging": "Paginação",
-                            "scroller": "Posição da barra de rolagem",
-                            "search": "Busca",
-                            "searchBuilder": "Mecanismo de busca",
-                            "select": "Selecionar",
-                            "title": "Criar novo estado",
-                            "toggleLabel": "Inclui:"
-                        },
-                        "emptyStates": "Nenhum estado salvo",
-                        "removeConfirm": "Confirma remover %s?",
-                        "removeJoiner": "e",
-                        "removeSubmit": "Remover",
-                        "removeTitle": "Remover estado",
-                        "renameButton": "Renomear",
-                        "renameLabel": "Novo nome para %s:",
-                        "renameTitle": "Renomear estado",
-                        "duplicateError": "Já existe um estado com esse nome!",
-                        "emptyError": "Não pode ser vazio!",
-                        "removeError": "Falha ao remover estado!"
-                    },
-                    "infoEmpty": "",
-                    "processing": "Carregando...",
-                    "searchPlaceholder": "Buscar registros"
-                },
                 order: [ // Ordenação da datatable com base em score, level, data e nome //
                     [3, 'desc'],
                     [2, 'desc'],
@@ -830,11 +629,13 @@
         }
         function start(){ // Função para começar o jogo //
             $('#startButton').blur(); // Tiramos o foco do botão //
+            document.getElementById('rightSide').style.display = 'block';
+            document.getElementById('canva-score').style.display = 'flex';
             arena.forEach((row) => row.fill(0)); // Primeiro limpamos toda a arena para caso houvesse alguma peça nela (caso seja a segunda vez jogando) //
             playerReset(); // Chamamos a função que gera peça //
             update(); // Chamamos a função que atualiza o jogo a todo instante //
             document.getElementById('gameOverScreen').style.display = 'none'; // Definimos que agora a tela de gameOver deve estar escondida dnv caso seja a segunda vez jogando (ou mais) //
-            dropInterval = 1000; // Definimos novamente o drop interval para 500 //
+            dropInterval = 500; // Definimos novamente o drop interval para 500 //
             player.score = 0; // O score é resetado para 0 também //
             updateScore(); // Atualizamos o score na tela //
             stopLevelUpdate(); // Pare o intervalo de atualização do nível antes de iniciar um novo jogo //
