@@ -16,15 +16,15 @@
         }
         @font-face {
             font-family: Arcade_I;
-            src: url(./fonts/ARCADE_I.TTF);
+            src: url(/TETRIS-SUPREMO/fonts/ARCADE_I.TTF);
         }
         @font-face {
             font-family: Arcade_N;
-            src: url(./fonts/ARCADE_N.TTF);
+            src: url(/TETRIS-SUPREMO/fonts/ARCADE_N.TTF);
         }
         @font-face {
             font-family: Arcade_R;
-            src: url(./fonts/ARCADE_R.TTF);
+            src: url(/TETRIS-SUPREMO/fonts/ARCADE_R.TTF);
         }
         body{  
             background: black;
@@ -269,7 +269,7 @@
             <canvas id="tetris" width="240" height="400"></canvas> <!--Canvas principal com o jogo-->
         </div>
         <div id="leftside">  <!--Div englobando a parte esquerda com os botões, score, etc-->
-            <img src="./img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
+            <img src="/TETRIS-SUPREMO/img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
             <canvas id="nextPiece" style="display: none;" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
             <div id="canva-score" style="display: none;">
                 <div id="score"></div>
@@ -346,11 +346,11 @@
 
     <!--Audios utilizados-->
 
-    <audio id="gameOverSound" src="./audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
-    <audio id="tetrisDropSound" src="./audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
-    <audio autoplay src="./audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
-    <audio id="buttonSound" src="./audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
-    <audio id="lineClear" src="./audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
+    <audio id="gameOverSound" src="/TETRIS-SUPREMO/audios/Arcade retro game over sound effect (FREE)_gdrQrCOSFfI.mp3"></audio>
+    <audio id="tetrisDropSound" src="/TETRIS-SUPREMO/audios/minecraft-item-drop-sound-effect-pgpbe9afed4_YItRJKGt.mp3"></audio>
+    <audio autoplay src="/TETRIS-SUPREMO/audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
+    <audio id="buttonSound" src="/TETRIS-SUPREMO/audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
+    <audio id="lineClear" src="/TETRIS-SUPREMO/audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!--Importação do Jquery-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script> <!--Datatale-->
@@ -836,6 +836,9 @@
             document.getElementById("nextPiece").style.display = "none";
             document.getElementById('rightSide').style.display = 'none';
             document.getElementById('canva-score').style.display = 'none';
+            dropInterval = 9999999; // Drop Interval infinito pra nao cair nenhuma peça //
+            player.pos.y = -10; // Jogamos as peças 10 px pra cima do canvas, assim ngm vai ver a peça ali paradinha //
+            stopLevelUpdate() // Paramos a contagem de lvl //
         }
         function draw() {  // Func responsável por fazer o fundinho da arena //
             context.fillStyle = "#000"; // Definimos o fundinho como preto (experimenta por rosa pra vc ver que engraçado) //
@@ -986,7 +989,6 @@
             document.getElementById('tentarNovamente').style.display = "flex";
             gameOverSound.play(); // Toca o som de fim //
             showGameOver(); // Mostra a tela de game over //
-            console.log("Game Over!"); // Console Log //
             dropInterval = 9999999; // Drop Interval infinito pra nao cair nenhuma peça //
             player.pos.y = -10; // Jogamos as peças 10 px pra cima do canvas, assim ngm vai ver a peça ali paradinha //
             stopLevelUpdate() // Paramos a contagem de lvl //
