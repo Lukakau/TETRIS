@@ -258,20 +258,100 @@
             padding: 8px 10px;
             outline: none; 
         }
+        #loader {
+            width: 50px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: var(--corPagina);
+            box-shadow: 0 0 0 0 rgba(59, 79, 255, 0.712);
+            animation: l2 1.5s infinite linear;
+            position: relative;
+        }
+        #loader:before, #loader:after {
+            content: "";
+            position: relative;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 0 0 rgba(33, 26, 133, 0.267);
+            animation: inherit;
+            animation-delay: -0.5s;
+        }
+        #loader:after {
+            animation-delay: -1s;
+        }
+        @keyframes l2 {
+            100% {
+                box-shadow: 0 0 0 40px #0000
+            }
+        }
+        #percentage{
+            color: var(--corPagina)
+        }
+        #especial1{
+            color: #ff0000;
+        }
+        @keyframes blink {
+            0% { 
+                border-color: white; 
+            }
+            25% { 
+                border-color: var(--corPagina); 
+            }
+            35% { 
+                border-color: white
+            }
+            50% { 
+                border-color: var(--corPagina)
+            }
+            65% { 
+                border-color: white
+            }
+            75% { 
+                border-color: var(--corPagina)
+            }
+            90% { 
+                border-color: white; 
+            }
+            100% { 
+                border-color: var(--corPagina)
+            }
+        }
+
+        .borda-piscante {
+            animation: blink 1.5s alternate infinite;
+        }
+        .poderes{
+            font-family: ARCADE_R;
+            font-size: 40px;
+            display: none;
+            position: fixed;
+            text-align: center;
+            top: 43%;
+            left: 50.5%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div id="tudo"> <!--Div englobando tudo-->
-        <div id="gameOverScreen" style="display: none;"> <!--Tela de Game Over fica hidden até o gatilho ser ativo-->
+        <div id="ultraSlow"class="poderes" style="display: none;">ULTRA SLOW</div>
+        <div id="clearAll"class="poderes" style="display: none;">CLEAR ALL</div>
+        <div id="clear3Lines"class="poderes" style="display: none;">CLEAR 3 LINES</div>
+        <div id="levelDown"class="poderes" style="display: none;">LEVEL DOWN</div>
+        <div id="gameOverScreen"style="display: none;"> <!--Tela de Game Over fica hidden até o gatilho ser ativo-->
             <h1>Game Over!</h1>
         </div>
         <div id="rightSide" style="display: none;">
+            <div style="display: none;" id="loader"></div>
             <canvas id="tetris" width="240" height="400"></canvas> <!--Canvas principal com o jogo-->
         </div>
         <div id="leftside">  <!--Div englobando a parte esquerda com os botões, score, etc-->
             <img src="./img/tetris-logo.png" id="logo"> <!--Logo do jogo-->
             <canvas id="nextPiece" style="display: none;" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
             <div id="canva-score" style="display: none;">
+                <div id="percentage">Especial: 0%</div>
+                <div id="especial1" style="display: none;">PODER PRONTO</div>
                 <div id="score"></div>
                 <div id="nivel"></div>
                 <button onclick="voltarMenu(), buttonClickSound()" id="voltar">Menu</button>
@@ -351,6 +431,7 @@
     <audio autoplay src="./audios/Animal Crossing_ City Folk- 2 AM_YsDM3UvXWOc.mp3" loop></audio>
     <audio id="buttonSound" src="./audios/button-plate-click-minecraft-sound-sound-effect-for-editing-h8y0jmvwdmm_F41koB79.mp3"></audio>
     <audio id="lineClear" src="./audios/tetris-game-boy-line-clear-sound-effects-lddsf4szgjw_S9wGjWBw.mp3"></audio>
+    <audio id="somPoder"src="./audios/power-up-35839_ZG5HFTYT.mp3"></audio>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script> <!--Importação do Jquery-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.js"></script> <!--Datatale-->
@@ -612,9 +693,9 @@
                         "searchPlaceholder": "Buscar registros"
                     },
                 order: [ // Ordenação da datatable com base em score, level, data e nome //
-                    [3, 'desc'],
                     [2, 'desc'],
-                    [4, 'asc'],
+                    [3, 'desc'],
+                    [1, 'asc'],
                     [0, 'asc'],
                 ]
             });
@@ -634,32 +715,216 @@
 
     <script>
         "use strict"; //Prevenção de erros de sintaxe, etc//
+        const poder = document.getElementById('somPoder');
         const botaoVoltar = document.getElementById('voltar');
         const todosBotoes = document.getElementById('botoes');
         const buttonClick = document.getElementById('buttonSound');
         const gameOverSound = document.getElementById('gameOverSound');
         const tetrisDrop = document.getElementById('tetrisDropSound');
         const clearSound = document.getElementById('lineClear');
+
         const botaoStart = document.getElementById('startButton');
         const canvas = document.getElementById("tetris"); // Achamos o canvas //
         const context = canvas.getContext("2d"); // Definimos ele como 2d através do context//
         context.scale(20, 20); // Passamos uma escala pra esse contexto //
 
-        function arenaSweep() {   // Função responsável por limpar as linhas da arena e contabilizar pontos //
-            let rowCount = 1;  // Definimos a contagem das linhas em 1, é responsável por saber quantas linhas foram removidas de uma vez //
-            outer: for (let y = arena.length - 1; y > 0; --y) { // Outer é um comando que permite que você de "break" em um loop externo utilizando um loop interno. Esse loop é responsável por percorrer as linhas e células da arena, começando da ultima e indo ate a primeira. //
-                for (let x = 0; x < arena[y].length; ++x) {  // Aqui no caso, atravessa as células da linha atual. //
-                    if (arena[y][x] === 0) {  // Se o valor das posições x e y for 0, ele continua com a verificação ignorando a linha atual
+        function arenaSweep() {
+            let rowCount = 1;  
+            outer: for (let y = arena.length - 1; y > 0; --y) { 
+                for (let x = 0; x < arena[y].length; ++x) {  
+                    if (arena[y][x] === 0) {  
                         continue outer;  
                     }  
                 }
-                const row = arena.splice(y, 1)[0].fill(0); // Caso a linha inteira esteja preenchida com 0, ela é repreenchida com 0, assim, limpando a linha //
-                arena.unshift(row); // Agora, essa mesma linha é adicionada a parte decima da arena, fazendo com que as outras linhas venham pra baixo
-                ++y; // O ++y é responsável por pular a linha impedindo que o looping externo limpe a linha novamente (causando um bug) //
-                lineClearSound(); // Sonzinho pra quando limpar a linha //
-                const scoreMultiplier = Math.pow(2, player.level - 1); // Ajuste para multiplicador de pontuação baseado no nível (ex: 2^(level-1))
-                player.score += rowCount * 6 * scoreMultiplier; // Pontuação ajustada com base no multiplicador de pontuação
+                const row = arena.splice(y, 1)[0].fill(0); 
+                arena.unshift(row); 
+                ++y; 
+                lineClearSound(); 
+                const scoreMultiplier = Math.pow(2, player.level - 1); 
+                player.score += rowCount * 6 * scoreMultiplier; 
+                
+                calculatePercentage(rowCount, player.level);
+
+                rowCount++;
+
+                updatePercentage();
+            }
+            poderPronto();
+        }
+        let percentage = 0; // Inicializa a porcentagem como 0
+        let baseIncrement = 1; // Incremento base de porcentagem quando uma linha é limpa
+        let bonusIncrement = 0.2; // Incremento de porcentagem de bônus quando mais linhas são limpas
+        let levelMultiplier = 0.2; // Multiplicador de porcentagem baseado no nível do jogador
+        let totalLinesCleared = 0; // Total de linhas limpas desde o início do jogo
+
+        function calculatePercentage(clearedLines, playerLevel) {
+            let newPercentage = (baseIncrement * clearedLines) + (bonusIncrement * levelMultiplier);
+            newPercentage += newPercentage * (playerLevel * levelMultiplier); // Ajusta a nova porcentagem com base no nível do jogador
+            percentage += newPercentage; // Soma o valor novo ao valor existente
+            totalLinesCleared += clearedLines; // Atualiza o número total de linhas limpas
+            return percentage; // Retorna a porcentagem atualizada
+        }
+        function updatePercentage() {
+            document.getElementById('percentage').textContent = `Especial: ${percentage.toFixed(0)}%`; // Atualiza o texto da porcentagem
+        }
+        var especialPronto = false;
+
+        function poderPronto(){
+            if (percentage >= 100) {
+                especialPronto = true;
+                document.getElementById('percentage').textContent = `ESPECIAL PRONTO`;
+                document.getElementById('especial1').style.display = "flex";
+                
+                // Criar elemento para mostrar o poder randomizado
+                const poderRandomizadoElement = document.createElement('p');
+                poderRandomizadoElement.id = 'poderRandomizado';
+                document.getElementById('especial1').appendChild(poderRandomizadoElement);
+                
+                // Executar a função para randomizar o poder e exibi-lo
+                executarPoderRandomizado();
+            }
+        }
+        function powerUltraSlow(){
+            percentage = 0;
+            updatePercentage();
+            poder.play();
+            document.getElementById('especial1').style.display = "none";
+            document.getElementById('tetris').classList.add('borda-piscante');
+            console.log('PODER ATIVADO!')
+
+            dropInterval = 500;
+
+            document.getElementById('ultraSlow').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('ultraSlow').style.display = 'none';
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('tetris').classList.remove('borda-piscante');
+            }, 1500);
+        }
+        function powerClear3Lines(){
+            percentage = 0;
+            updatePercentage();
+            poder.play();
+            document.getElementById('especial1').style.display = "none";
+            document.getElementById('tetris').classList.add('borda-piscante');
+            console.log('PODER ATIVADO!')
+
+            for (let i = 0; i < 3; i++) { // Loop para remover as três linhas
+                arena.pop(); // Remove a linha mais baixa da arena
+                arena.unshift(new Array(arena[0].length).fill(0)); // Adiciona uma nova linha vazia no topo da arena
+            }
+
+            const totalRowsCleared = arena.length; // Número total de linhas limpas
+            const scoreMultiplier = Math.pow(2, player.level - 1); // Multiplicador de pontuação
+            player.score += totalRowsCleared * 2 * scoreMultiplier; // Atualiza a pontuação do jogador
+            updateScore();
+
+            document.getElementById('clear3Lines').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('clear3Lines').style.display = 'none';
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('tetris').classList.remove('borda-piscante');
+            }, 1500);
+        }
+        function powerLevelDown(){
+            percentage = 0;
+            updatePercentage();
+            poder.play();
+            document.getElementById('especial1').style.display = "none";
+            document.getElementById('tetris').classList.add('borda-piscante');
+            console.log('PODER ATIVADO!')
+
+            player.level--;
+            dropInterval += 50;
+            showLevel();
+
+            document.getElementById('levelDown').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('levelDown').style.display = 'none';
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('tetris').classList.remove('borda-piscante');
+            }, 1500);
+        }
+        function powerClearLines(){
+            percentage = 0;
+            updatePercentage();
+            poder.play();
+            document.getElementById('especial1').style.display = "none";
+            document.getElementById('tetris').classList.add('borda-piscante');
+            console.log('PODER ATIVADO!')
+            for (let y = 0; y < arena.length; ++y) {
+                arena[y] = new Array(arena[0].length).fill(0); // Define cada linha como uma nova linha preenchida com zeros
+            }
+
+            lineClearSound(); // Som de limpeza de linha
+            
+            const totalRowsCleared = arena.length; // Número total de linhas limpas
+            const scoreMultiplier = Math.pow(2, player.level - 1); // Multiplicador de pontuação
+            player.score += totalRowsCleared * 2 * scoreMultiplier; // Atualiza a pontuação do jogador
+            updateScore();
+
+            document.getElementById('clearAll').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('clearAll').style.display = 'none';
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('tetris').classList.remove('borda-piscante');
+            }, 1500);
+
+        }
+        
+        function executarPoderRandomizado() {
+            const powers = [
+                powerLevelDown,  // Mais provável
+                powerClear3Lines,
+                powerClearLines,
+                powerUltraSlow  // Menos provável
+            ];
+
+            // Definindo as probabilidades das funções
+            const probabilities = [
+                0.4, // Probabilidade de powerLevelDown (40%)
+                0.25, // Probabilidade de powerClear3Lines (25%)
+                0.1, // Probabilidade de powerClearLines (10%)
+                0.01  // Probabilidade de powerUltraSlow (1%)
+            ];
+
+            let randomNumber = Math.random(); // Gerar um número aleatório entre 0 e 1
+            let cumulativeProbability = 0;
+
+            let poderRandomizado; // Variável para armazenar o nome do poder randomizado
+
+            // Iterar sobre as funções e suas probabilidades
+            for (let i = 0; i < powers.length; i++) {
+                cumulativeProbability += probabilities[i];
+                if (randomNumber <= cumulativeProbability) {
+                    powers[i](); // Executa a função correspondente
+                    poderRandomizado = powers[i].name; // Obter o nome do poder randomizado
+                    break;
+                }
+            }
+
+            // Exibir o nome do poder randomizado abaixo de "ESPECIAL PRONTO"
+            document.getElementById('poderRandomizado').textContent = poderRandomizado;
+        }
+
+        function createMatrix(w, h) {  // Função para criar a matrix do jogo de acordo com a altura e largura desejados. Nada muito complexo //
+            const matrix = []; // A matrix é definida como uma array vazia //
+            while (h--) {  // Enquanto a altura estiver diminuindo, ele continau preenchendo a matrix com "0" //
+                matrix.push(new Array(w).fill(0));
             }  
+            return matrix; // Dito isso, agora a função retorna a matrix como uma array preenchida com "0" em toda a sua altura e largura. //
         }  
         function collide(arena, player) {  // Função para verificarmos a colisão da peça do jogador com as paredes, fundo da arena ou com outras peças. //
             const m = player.matrix; // Definimos M como a matriz do jogador (peça atual) //
@@ -672,13 +937,6 @@
                 }  
             }  
             return false;
-        }  
-        function createMatrix(w, h) {  // Função para criar a matrix do jogo de acordo com a altura e largura desejados. Nada muito complexo //
-            const matrix = []; // A matrix é definida como uma array vazia //
-            while (h--) {  // Enquanto a altura estiver diminuindo, ele continau preenchendo a matrix com "0" //
-                matrix.push(new Array(w).fill(0));
-            }  
-            return matrix; // Dito isso, agora a função retorna a matrix como uma array preenchida com "0" em toda a sua altura e largura. //
         }  
         function createPiece(type) {  // Função para a criação das peças //
             if (type === "I") {  
@@ -831,6 +1089,9 @@
             clearSound.play();
         }
         function voltarMenu(){
+            percentage = 0;
+            updatePercentage();
+            document.getElementById('loader').style.display = "none";
             todosBotoes.style.display = "flex";
             document.getElementById('gameOverScreen').style.display = "none";
             document.getElementById("nextPiece").style.display = "none";
@@ -941,6 +1202,10 @@
         }
         function start(){ // Função para começar o jogo //
             $('#startButton').blur(); // Tiramos o foco do botão //
+            percentage = 0;
+            updatePercentage();
+            document.getElementById('especial1').style.display = "none"
+            document.getElementById('loader').style.display = "none";
             document.getElementById('tentarNovamente').style.display = "none";
             document.getElementById("nextPiece").style.display = "flex";
             todosBotoes.style.display = "none";
@@ -974,7 +1239,7 @@
         function startLevelUpdate() {
             levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos //
         }
-
+ 
         // Função para parar o intervalo de atualização do nível (se necessário) //
         function stopLevelUpdate() {
             clearInterval(levelUpdateInterval);
@@ -982,10 +1247,11 @@
 
         // Função para exibir o nível do jogador //
         function showLevel() {
-            let nivelJogador = String(player.level).padStart(2, '0'); // Colocamos 3 zeros na tela //
+            let nivelJogador = String(player.level).padStart(2, '0'); // Colocamos 2 zeros na tela //
             document.getElementById("nivel").innerText = "Level: " + nivelJogador; // Adicionamos o lvl atual com a string "Level" //
         }
         function gameOver(nivelJogador) { // Função que acaba com o jogo (o parâmetro está ai pois foi a única maneira que consegui incluir o level atual do jogador na datatable) //
+            document.getElementById('loader').style.display = "none";
             document.getElementById('tentarNovamente').style.display = "flex";
             gameOverSound.play(); // Toca o som de fim //
             showGameOver(); // Mostra a tela de game over //
@@ -1110,6 +1376,8 @@
         } 
         
         // Movimentação do jogador //
+        
+        var apertado = false;
 
         document.addEventListener("keydown", (event) => {  
             if (event.keyCode === 37) {  
@@ -1131,6 +1399,11 @@
                 playerHardDrop();
                 tetrisDrop.play();
             }
+            // else if(event.keyCode === 82) { // Especial = R
+            //     if(especialPronto == true){
+            //         executarPoderRandomizado();
+            //     }
+            // }
         });  
         // Definimmos o quadradinho como 5x5 //
         const arenaNextPiece = createMatrix(5, 5);
