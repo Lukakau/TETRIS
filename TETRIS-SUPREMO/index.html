@@ -285,10 +285,14 @@
             }
         }
         #percentage{
-            color: var(--corPagina)
+            color: var(--corPagina);
         }
         #especial1{
-            color: #ff0000;
+            display: flex;
+            border-radius: 10px;
+            z-index: -1;
+            animation: l1 1s;
+            color: #1abdd3;
         }
         @keyframes blink {
             0% { 
@@ -331,6 +335,18 @@
             transform: translate(-50%, -50%);
             color: white;
         }
+        #poderRandomizado{
+            color: var(--corPagina);
+        }
+        @keyframes l1 {
+            100% {box-shadow: 0 0 0 900px #c4aeaebe};
+        }
+        @keyframes l3{
+            100% {box-shadow: 0 0 0 100px #c4aeaebe};
+        }
+        .reverse-animation{
+            animation: l3 1s alternate-reverse;
+        }
     </style>
 </head>
 <body>
@@ -351,7 +367,8 @@
             <canvas id="nextPiece" style="display: none;" width="80" height="80"></canvas> <!--Quadrado com prox peça-->
             <div id="canva-score" style="display: none;">
                 <div id="percentage">Especial: 0%</div>
-                <div id="especial1" style="display: none;">PODER PRONTO</div>
+                <div id="especial1" class="l1" style="display: none;">ESPECIAL PRONTO</div>
+                <div id="poderRandomizado" style="display: none;"></div>
                 <div id="score"></div>
                 <div id="nivel"></div>
                 <button onclick="voltarMenu(), buttonClickSound()" id="voltar">Menu</button>
@@ -749,11 +766,14 @@
 
                 updatePercentage();
             }
+            if (especialPronto && !poderJaRandomizado) {
+                randomizarEMostrarPoder(); // Chama a função para randomizar o poder
+            }
             poderPronto();
         }
         let percentage = 0; // Inicializa a porcentagem como 0
         let baseIncrement = 1; // Incremento base de porcentagem quando uma linha é limpa
-        let bonusIncrement = 0.2; // Incremento de porcentagem de bônus quando mais linhas são limpas
+        let bonusIncrement = 4; // Incremento de porcentagem de bônus quando mais linhas são limpas
         let levelMultiplier = 0.2; // Multiplicador de porcentagem baseado no nível do jogador
         let totalLinesCleared = 0; // Total de linhas limpas desde o início do jogo
 
@@ -772,23 +792,18 @@
         function poderPronto(){
             if (percentage >= 100) {
                 especialPronto = true;
-                document.getElementById('percentage').textContent = `ESPECIAL PRONTO`;
                 document.getElementById('especial1').style.display = "flex";
-                
-                // Criar elemento para mostrar o poder randomizado
-                const poderRandomizadoElement = document.createElement('p');
-                poderRandomizadoElement.id = 'poderRandomizado';
-                document.getElementById('especial1').appendChild(poderRandomizadoElement);
-                
-                // Executar a função para randomizar o poder e exibi-lo
-                executarPoderRandomizado();
+                document.getElementById('percentage').textContent = 'Especial: 100%';
+                document.getElementById('poderRandomizado').style.display = "flex";
+                document.getElementById('poderRandomizado').textContent = poderRandomizadoAtual
             }
         }
+        
         function powerUltraSlow(){
             percentage = 0;
             updatePercentage();
             poder.play();
-            document.getElementById('especial1').style.display = "none";
+            levelMultiplier = 0.05
             document.getElementById('tetris').classList.add('borda-piscante');
             console.log('PODER ATIVADO!')
 
@@ -808,7 +823,6 @@
             percentage = 0;
             updatePercentage();
             poder.play();
-            document.getElementById('especial1').style.display = "none";
             document.getElementById('tetris').classList.add('borda-piscante');
             console.log('PODER ATIVADO!')
 
@@ -836,12 +850,11 @@
             percentage = 0;
             updatePercentage();
             poder.play();
-            document.getElementById('especial1').style.display = "none";
             document.getElementById('tetris').classList.add('borda-piscante');
             console.log('PODER ATIVADO!')
 
             player.level--;
-            dropInterval += 50;
+            dropInterval += 30;
             showLevel();
 
             document.getElementById('levelDown').style.display = 'block';
@@ -854,11 +867,10 @@
                 document.getElementById('tetris').classList.remove('borda-piscante');
             }, 1500);
         }
-        function powerClearLines(){
+        function powerClearAll(){
             percentage = 0;
             updatePercentage();
             poder.play();
-            document.getElementById('especial1').style.display = "none";
             document.getElementById('tetris').classList.add('borda-piscante');
             console.log('PODER ATIVADO!')
             for (let y = 0; y < arena.length; ++y) {
@@ -884,11 +896,14 @@
 
         }
         
-        function executarPoderRandomizado() {
+        let poderRandomizadoAtual; // Variável global para armazenar o poder randomizado atual
+        let poderJaRandomizado = false; // Variável de controle para verificar se o poder já foi randomizado
+
+        function randomizarEMostrarPoder() {
             const powers = [
                 powerLevelDown,  // Mais provável
                 powerClear3Lines,
-                powerClearLines,
+                powerClearAll,
                 powerUltraSlow  // Menos provável
             ];
 
@@ -896,27 +911,46 @@
             const probabilities = [
                 0.4, // Probabilidade de powerLevelDown (40%)
                 0.25, // Probabilidade de powerClear3Lines (25%)
-                0.1, // Probabilidade de powerClearLines (10%)
-                0.01  // Probabilidade de powerUltraSlow (1%)
+                0.1, // Probabilidade de powerClearAll (10%)
+                0.08  // Probabilidade de powerUltraSlow (8%)
             ];
 
             let randomNumber = Math.random(); // Gerar um número aleatório entre 0 e 1
             let cumulativeProbability = 0;
 
-            let poderRandomizado; // Variável para armazenar o nome do poder randomizado
-
             // Iterar sobre as funções e suas probabilidades
             for (let i = 0; i < powers.length; i++) {
                 cumulativeProbability += probabilities[i];
                 if (randomNumber <= cumulativeProbability) {
-                    powers[i](); // Executa a função correspondente
-                    poderRandomizado = powers[i].name; // Obter o nome do poder randomizado
+                    poderRandomizadoAtual = powers[i].name; // Armazena o nome do poder randomizado globalmente
                     break;
                 }
             }
 
-            // Exibir o nome do poder randomizado abaixo de "ESPECIAL PRONTO"
-            document.getElementById('poderRandomizado').textContent = poderRandomizado;
+            poderJaRandomizado = true; // Define a variável de controle como true após randomizar o poder
+
+            return poderRandomizadoAtual; // Retorna o nome do poder randomizado
+        }
+
+        function executarPoderRandomizado(poderRandomizado) {
+            switch (poderRandomizado) {
+                case 'powerLevelDown':
+                    powerLevelDown();
+                    break;
+                case 'powerClear3Lines':
+                    powerClear3Lines();
+                    break;
+                case 'powerClearAll':
+                    powerClearAll();
+                    break;
+                case 'powerUltraSlow':
+                    powerUltraSlow();
+                    break;
+            }
+            percentage = 0;
+            especialPronto = false;
+            document.getElementById('especial1').style.display = "none"
+            document.getElementById('poderRandomizado').style.display = 'none';
         }
 
         function createMatrix(w, h) {  // Função para criar a matrix do jogo de acordo com a altura e largura desejados. Nada muito complexo //
@@ -1202,6 +1236,7 @@
         }
         function start(){ // Função para começar o jogo //
             $('#startButton').blur(); // Tiramos o foco do botão //
+            randomizarEMostrarPoder()
             percentage = 0;
             updatePercentage();
             document.getElementById('especial1').style.display = "none"
@@ -1237,7 +1272,7 @@
         }
         // Função para iniciar o intervalo de atualização do nível //
         function startLevelUpdate() {
-            levelUpdateInterval = setInterval(updateLevel, 20000); // Atualiza o nível a cada 20 segundos //
+            levelUpdateInterval = setInterval(updateLevel, 15000); // Atualiza o nível a cada 20 segundos //
         }
  
         // Função para parar o intervalo de atualização do nível (se necessário) //
@@ -1399,11 +1434,11 @@
                 playerHardDrop();
                 tetrisDrop.play();
             }
-            // else if(event.keyCode === 82) { // Especial = R
-            //     if(especialPronto == true){
-            //         executarPoderRandomizado();
-            //     }
-            // }
+            else if(event.keyCode === 82) { // Especial = R
+                if(especialPronto == true){
+                    executarPoderRandomizado(poderRandomizadoAtual);
+                }
+            }
         });  
         // Definimmos o quadradinho como 5x5 //
         const arenaNextPiece = createMatrix(5, 5);
